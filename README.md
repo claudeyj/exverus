@@ -1,19 +1,33 @@
-# [ICML'26] ExVerus: Verus Proof Repair via Counterexample Reasoning
+# <p align=center> [ICML 2026] ExVerus: Verus Proof Repair via Counterexample Reasoning
 
-This repository is the artifact for the paper
-[**ExVerus: Verus Proof Repair via Counterexample Reasoning**](https://openreview.net/forum?id=FNDkXA0OUJ). The arXiv preprint is available
-[here](https://arxiv.org/abs/2603.25810).
+[![Arxiv Paper](https://img.shields.io/badge/Arxiv-Paper-brightred)](https://arxiv.org/abs/2603.25810)
+[![OpenReview](https://img.shields.io/badge/OpenReview-Forum-8c1b13)](https://openreview.net/forum?id=FNDkXA0OUJ)
+![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/github/stars/claudeyj/exverus?style=social)
+[![Website](https://img.shields.io/badge/Website-exverus--proof.github.io-blue)](https://exverus-proof.github.io/)
 
-ExVerus repairs failing [Verus](https://github.com/verus-lang/verus) proofs by
-generating source-level counterexamples, validating them when possible, and
-using them to guide mutation-based proof repair. The artifact contains the
-Python repair pipeline, Rust/Verus-Syn helper tools, benchmark copies, prompts,
-and analysis scripts used by the paper experiments.
+## About
+Existing LLM-based verification approaches treat proof generation as a
+static, end-to-end prediction over source code, relying on limited verifier
+feedback with no access to concrete program behavior. _ExVerus_ is a
+counterexample-guided framework that instead lets an LLM reason about proofs
+using behavioral feedback: when a [Verus](https://github.com/verus-lang/verus)
+proof fails, ExVerus generates and validates source-level counterexamples,
+then guides the LLM to generalize them into inductive invariants that block
+the failure — significantly improving proof accuracy, robustness, and token
+efficiency over the state-of-the-art prompting-based Verus proof generator.
+
+This repository is the artifact for the paper, containing the Python repair
+pipeline, Rust/Verus-Syn helper tools, benchmark copies, prompts, and analysis
+scripts used by the paper experiments.
 
 > [!IMPORTANT]
 > Full paper-scale reproduction requires LLM API calls, Verus, Rust tooling, and
 > substantial compute. The commands below focus on the core experiment modes in
 > small/debug form rather than launching the full sweep.
+
+
+
+![poster](./exverus_poster.svg)
 
 ## Repository Contents
 
@@ -39,6 +53,9 @@ The main paper experiments correspond to these artifact modes:
 | VerusBench | `--source CLEANED_VB` |
 | DafnyBench + LCBench + HumanEval | `--source THREEBENCH` |
 | Additional benchmarks, including ObfsBench | `--source ADDITIONAL` |
+
+See [`Benchmarks/README.md`](Benchmarks/README.md) for which benchmark folder each `--source`
+value pulls tasks from, task counts, and citations.
 
 The paper evaluates five model families: DeepSeek-V3.1, GPT-4o, Qwen3-Coder,
 o4-mini, and Claude Sonnet 4.5. The default paper repair budget is 10 repair
