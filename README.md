@@ -20,6 +20,9 @@ This repository is the artifact for the paper, containing the Python repair
 pipeline, Rust/Verus-Syn helper tools, benchmark copies, prompts, and analysis
 scripts used by the paper experiments.
 
+The ExVerus workflow also ships as an
+[agent skill](#agent-skill) for coding agents such as Codex <img src="https://github.com/openai.png" height="14" alt="">, Claude Code <img src="https://cdn.simpleicons.org/claude" height="14" alt="">, OpenCode <img src="https://opencode.ai/favicon.svg" height="14" alt=""> etc. to use ExVerus for proof repair.
+
 > [!IMPORTANT]
 > Full paper-scale reproduction requires LLM API calls, Verus, Rust tooling, and
 > substantial compute. The commands below focus on the core experiment modes in
@@ -40,6 +43,7 @@ scripts used by the paper experiments.
 | `verus-proof-synthesis/` | AutoVerus support code reused for initial proof generation and Verus utilities |
 | `scripts/` | Historical batch scripts used for large experiment sweeps |
 | `results/` | Generated outputs, repair traces, status files, and cost reports |
+| `skills/` | The ExVerus workflow as an agent skill for Claude Code <img src="https://cdn.simpleicons.org/claude" height="14" alt=""> and Codex <img src="https://github.com/openai.png" height="14" alt=""> |
 
 ## Paper Experiment Map
 
@@ -214,6 +218,28 @@ For paper-scale runs, use the core modes above and vary:
 - `--cex-generalization-strategy`: `mut_val` for ExVerus, `simple` for the
   direct generalization ablation
 - `--num-cex`: `10` for the main setting, `1` for the CEX-count sensitivity
+
+## Agent Skill
+
+[`skills/counterexample-guided-proof/SKILL.md`](skills/counterexample-guided-proof/SKILL.md)
+walks a coding agent through the ExVerus loop: pin down the failing invariant,
+ask a solver for counterexamples, check that they really break the proof, and
+fix the invariant until they are blocked. It is written for the agent to
+follow. The `vinv` pipeline doesn't use it, and neither did the paper
+experiments.
+
+The skill tells the agent what to do, not how to set things up. You still need
+a working verifier (for Verus, see [Setup](#setup)) and a solver such as Z3Py
+or cvc5.
+
+Inside this repo, Claude Code <img src="https://cdn.simpleicons.org/claude" height="14" alt=""> and Codex <img src="https://github.com/openai.png" height="14" alt=""> pick it up on their own through the
+symlinks in `.claude/skills/` and `.agents/skills/`. To use it in other
+projects, link it into your user skills directory:
+
+```bash
+ln -s "$PWD/skills/counterexample-guided-proof" ~/.claude/skills/   # Claude Code
+ln -s "$PWD/skills/counterexample-guided-proof" ~/.agents/skills/   # Codex
+```
 
 ## Citation
 
